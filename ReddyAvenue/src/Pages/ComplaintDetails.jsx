@@ -3,48 +3,65 @@ import { useParams } from 'react-router-dom';
 
 function ComplaintDetails() {
   const { id } = useParams();
-
-  const [complaints, setComplaints] = useState([
-    { id: 1, date: '2024-07-01', complaint: 'Broken Elevator', raisedBy: 'John Doe', status: 'Pending' },
-    { id: 2, date: '2024-07-02', complaint: 'Water Leakage', raisedBy: 'Jane Smith', status: 'Resolved' },
-    { id: 3, date: '2024-07-03', complaint: 'Power Outage', raisedBy: 'Alice Johnson', status: 'In Progress' }
-  ]);
-
-  const [newComplaint, setNewComplaint] = useState({
+  const [formData, setFormData] = useState({
     date: '',
     complaint: '',
     raisedBy: '',
     status: ''
   });
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentComplaint, setCurrentComplaint] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewComplaint({ ...newComplaint, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditing) {
-      setComplaints(complaints.map(comp => (comp.id === currentComplaint.id ? { ...newComplaint, id: currentComplaint.id } : comp)));
-      setIsEditing(false);
-      setCurrentComplaint(null);
-    } else {
-      setComplaints([...complaints, { ...newComplaint, id: complaints.length + 1 }]);
+
+    if (!formData.complaint || !formData.raisedBy || !formData.status) {
+      setSuccessMessage(null);
+      return setErrorMessage("Please fill all fields");
     }
-    setNewComplaint({ date: '', complaint: '', raisedBy: '', status: '' });
-  };
 
-  const handleEdit = (complaint) => {
-    setIsEditing(true);
-    setCurrentComplaint(complaint);
-    setNewComplaint(complaint);
-  };
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const baseURL = "http://localhost:3147";
+      const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.success === false) {
+        setLoading(false);
+        setSuccessMessage(null);
+        return setErrorMessage(data.message);
+      }
+      setLoading(false);
+      if (res.ok) {
+        setErrorMessage(null);
+        setSuccessMessage("Complaint added successfully");
+        setFormData({
+          date: '',
+          complaint: '',
+          raisedBy: '',
+          status: ''
+        });
 
-  const handleDelete = (id) => {
-    setComplaints(complaints.filter(complaint => complaint.id !== id));
+        // Set timeout to clear success message after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 3000);
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setSuccessMessage(null);
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,8 +75,9 @@ function ComplaintDetails() {
             </label>
             <input
               type="date"
+              id="date"
               name="date"
-              value={newComplaint.date}
+              value={formData.date}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -70,8 +88,9 @@ function ComplaintDetails() {
             </label>
             <input
               type="text"
+              id="complaint"
               name="complaint"
-              value={newComplaint.complaint}
+              value={formData.complaint}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -82,8 +101,9 @@ function ComplaintDetails() {
             </label>
             <input
               type="text"
+              id="raisedBy"
               name="raisedBy"
-              value={newComplaint.raisedBy}
+              value={formData.raisedBy}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -94,54 +114,23 @@ function ComplaintDetails() {
             </label>
             <input
               type="text"
+              id="status"
               name="status"
-              value={newComplaint.status}
+              value={formData.status}
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          {successMessage && <p className="text-green-500">{successMessage}</p>}
           <button
             type="submit"
-            className={`bg-${isEditing ? 'green' : 'blue'}-500 hover:bg-${isEditing ? 'green' : 'blue'}-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+            className="bg-green-500 hover:bg-blue-500 p-2"
+            disabled={loading}
           >
-            {isEditing ? 'Update Complaint' : 'Add Complaint'}
+            {loading ? 'Adding...' : 'Add Complaint'}
           </button>
         </form>
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr>
-              <th className="border-b-2 py-2">Date</th>
-              <th className="border-b-2 py-2">Complaint</th>
-              <th className="border-b-2 py-2">Raised By</th>
-              <th className="border-b-2 py-2">Status</th>
-              <th className="border-b-2 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {complaints.map((complaint, index) => (
-              <tr key={index} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'}>
-                <td className="border-b py-2">{complaint.date}</td>
-                <td className="border-b py-2">{complaint.complaint}</td>
-                <td className="border-b py-2">{complaint.raisedBy}</td>
-                <td className="border-b py-2">{complaint.status}</td>
-                <td className="border-b py-2 flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(complaint)}
-                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(complaint.id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   );

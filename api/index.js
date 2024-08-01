@@ -2,7 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import userRoutes from './routes/user.route.js';
+import authRoutes from './routes/auth.route.js';
+import complaintRoutes from './routes/complaint.route.js'
 
 
 
@@ -21,10 +25,15 @@ const __dirname=path.resolve();
 const app=express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
-app.listen(3457,()=>{
-    console.log("Server is running on port 3000!");
+app.listen(3147,()=>{
+    console.log("Server is running on port 3147!");
 });
+
+app.use('/api/user', userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/complaint", complaintRoutes);
 
 
 

@@ -1,11 +1,13 @@
-import {useSelector,useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
+import { signoutSuccess } from '../redux/user/userSlice';
 
 export default function Header() {
   const dispatch=useDispatch();
   
   const handleSignout=async()=>{
     try{
-      const res=await fetch('/api/user/signout', {
+      const baseURL = 'http://localhost:3147';
+      const res=await fetch(`${baseURL}/api/user/signout`, {
         method:"POST",
       })
       const data=await res.json();
