@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function HomePage({ complaints }) {
+function HomePage() {
   const navigate = useNavigate();
 
   const handleRaiseComplaint = () => {
@@ -37,24 +37,11 @@ function HomePage({ complaints }) {
             </button>
           </div>
 
-          {/* Complaints Section */}
-          {/* <section id="complaints" className="bg-white text-gray-800 rounded-lg shadow-lg p-4 max-h-64 overflow-auto">
-            <h2 className="text-2xl font-bold mb-4 text-center">Complaints</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {complaints.map(complaint => (
-                <a key={complaint.id} href={`/complaint/${complaint.id}`} className="bg-gradient-to-r from-red-400 to-pink-500 p-2 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <h3 className="text-xl font-bold mb-1">{complaint.complaint}</h3>
-                  <p>{complaint.date}</p>
-                  <p>{complaint.raisedBy}</p>
-                  <p>{complaint.status}</p>
-                </a>
-              ))}
-            </div>
-          </section> */}
+        
         </div>
       </div>
 
-      {/* Footer */}
+     
       <footer className="bg-gray-800 text-center py-2 w-full">
         <p>© 2024 Reddy Avenue Colony. All rights reserved.</p>
       </footer>

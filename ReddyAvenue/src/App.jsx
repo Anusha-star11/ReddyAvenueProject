@@ -9,7 +9,8 @@ import Header from './components/Header';
 // import ComplaintsPage from './Pages/ComplaintsPage';
 import PrivateRoute from './components/PrivateRoute';
 import ComplaintDetails from './Pages/ComplaintDetails';
-import ComplaintsPage from './Pages/ComplaintsPage';
+import ComplaintsPage from './Pages/AllComplaints';
+import EditComplaint from './Pages/EditComplaint';
 
 // function App() {
 //   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -95,6 +96,7 @@ function App() {
           path="/complaints" 
           element={<ComplaintsPage/>} 
         />
+        <Route path="/editcomplaint/:id" element={<EditComplaint />} />
       </Route>
        
       </Routes>
