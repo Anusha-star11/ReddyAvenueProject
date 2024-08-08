@@ -28,6 +28,7 @@ export default function SignIn() {
         method: 'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify(formData),// no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        credentials: 'include'
       });
       const data = await res.json();
      

@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 
 export const createComplaint = async (req, res, next) => {
+  console.log(req)
     if (!req.body.complaint || !req.body.raisedBy || !req.body.status) {
         return next(errorHandler(400, "Please provide all required fields"));
     }

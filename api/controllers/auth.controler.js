@@ -51,14 +51,24 @@ export const signin=async(req,res,next)=>{
         }
 
         const token=jwt.sign(
-            {id:validUser._id, isAdmin:validUser.isAdmin},process.env.JWT_SECRET);
+            {id:validUser._id, email: validUser.email},process.env.JWT_SECRET, { expiresIn: '1h' });
         const {password:pass, ...rest}=validUser._doc;
         res
         .status(200)
         .cookie('access_token',token,{
             httpOnly:true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Lax'
         })
-        .json(rest)
+        .json({success: true,
+            message: 'Signin successful',
+            user: {
+                id: validUser._id,
+                username: validUser.username,
+                email: validUser.email
+            }
+    })
+    console.log('Cookie set:', res.getHeader('Set-Cookie')); 
 
     }catch(error){
         next(error)

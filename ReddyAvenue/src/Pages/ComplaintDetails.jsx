@@ -14,7 +14,7 @@ function ComplaintDetails() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -29,10 +29,12 @@ function ComplaintDetails() {
       setLoading(true);
       setErrorMessage(null);
       const baseURL = "http://localhost:3147";
+      console.log('Sending request to:', `${baseURL}/api/complaint/createcomplaint`);
       const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        credentials: 'include', 
       });
       const data = await res.json();
       console.log(data);
@@ -125,7 +127,7 @@ function ComplaintDetails() {
           {successMessage && <p className="text-green-500">{successMessage}</p>}
           <button
             type="submit"
-            className="bg-green-500 hover:bg-blue-500 p-2"
+            className="bg-orange-500 hover:bg-blue-500 p-2 rounded-lg"
             disabled={loading}
           >
             {loading ? 'Adding...' : 'Add Complaint'}

@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import complaintRoutes from './routes/complaint.route.js'
+import { verifyToken } from './utils/verifyUser.js';
 
 
 
@@ -25,15 +26,15 @@ const __dirname=path.resolve();
 const app=express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({origin:"http://localhost:5173",credentials:true}));
 
 app.listen(3147,()=>{
     console.log("Server is running on port 3147!");
 });
-
+app.options('*', cors());
 app.use('/api/user', userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/complaint", complaintRoutes);
+app.use("/api/complaint", verifyToken,complaintRoutes);
 
 
 

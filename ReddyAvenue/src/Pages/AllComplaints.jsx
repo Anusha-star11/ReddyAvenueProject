@@ -17,6 +17,7 @@ function AllComplaints() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
+          credentials: 'include', 
         });
         const data = await res.json();
         if (res.ok) {
@@ -42,8 +43,9 @@ function AllComplaints() {
           method: "DELETE",
           headers: { 
             "Content-Type": "application/json",
-            // "Authorization": `Bearer ${localStorage.getItem('token')}`
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
+          credentials: 'include', 
         });
         if (res.ok) {
           setComplaints(complaints.filter(complaint => complaint._id !== id));

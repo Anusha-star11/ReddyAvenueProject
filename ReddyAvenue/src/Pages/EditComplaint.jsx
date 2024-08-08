@@ -23,6 +23,7 @@ function EditComplaint() {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
+          credentials: 'include', 
         });
         const data = await res.json();
         if (res.ok) {
@@ -55,6 +56,7 @@ function EditComplaint() {
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(formData),
+        credentials: 'include', 
       });
       const data = await res.json();
       if (res.ok) {
