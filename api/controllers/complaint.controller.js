@@ -86,17 +86,40 @@ export const getAllComplaints = async (req, res, next) => {
 
 // Controller to update a complaint by ID
 export const updateComplaint = async (req, res, next) => {
-  try {
-    const updatedComplaint = await Complaint.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedComplaint) return next(errorHandler(404, "Complaint not found"));
-    res.status(200).json(updatedComplaint);
-  } catch (error) {
-    next(error);
-  }
+  upload(req, res, async function (err) {
+    if (err) {
+      return next(errorHandler(500, `Multer error: ${err.message}`));
+    }
+
+    const { complaint, raisedBy, date, status } = req.body;
+
+    let imagePath = req.body.image; // The existing image path
+    if (req.file) {
+      imagePath = `uploads/${req.file.filename}`; // New image path
+    }
+
+    try {
+      const updatedComplaint = await Complaint.findByIdAndUpdate(
+        req.params.id,
+        {
+          complaint,
+          raisedBy,
+          date,
+          status,
+          image: imagePath,
+        },
+        { new: true }
+      );
+
+      if (!updatedComplaint) {
+        return next(errorHandler(404, 'Complaint not found'));
+      }
+
+      res.status(200).json(updatedComplaint);
+    } catch (error) {
+      next(error);
+    }
+  });
 };
 
 // Controller to delete a complaint by ID

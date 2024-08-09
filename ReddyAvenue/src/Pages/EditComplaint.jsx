@@ -8,7 +8,8 @@ function EditComplaint() {
     date: '',
     complaint: '',
     raisedBy: '',
-    status: ''
+    status: '',
+    image: null, // New field for image
   });
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -27,7 +28,13 @@ function EditComplaint() {
         });
         const data = await res.json();
         if (res.ok) {
-          setFormData(data);
+          setFormData({
+            date: data.date.split('T')[0], // Format the date for the input field
+            complaint: data.complaint,
+            raisedBy: data.raisedBy,
+            status: data.status,
+            image: data.image,
+          });
         } else {
           setErrorMessage(data.message);
         }
@@ -42,20 +49,32 @@ function EditComplaint() {
   }, [id]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value});
+    if (e.target.name === 'image') {
+      setFormData({ ...formData, image: e.target.files[0] }); // Handle file input
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const baseURL = "http://localhost:3147";
+      const formDataToSend = new FormData(); // Use FormData for file upload
+      formDataToSend.append('date', formData.date);
+      formDataToSend.append('complaint', formData.complaint);
+      formDataToSend.append('raisedBy', formData.raisedBy);
+      formDataToSend.append('status', formData.status);
+      if (formData.image instanceof File) { // Check if a new image is uploaded
+        formDataToSend.append('image', formData.image);
+      }
+
       const res = await fetch(`${baseURL}/api/complaint/updatecomplaint/${id}`, {
         method: "PUT",
         headers: { 
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(formData),
+        body: formDataToSend,
         credentials: 'include', 
       });
       const data = await res.json();
@@ -78,7 +97,7 @@ function EditComplaint() {
         ) : errorMessage ? (
           <p className="text-red-500">{errorMessage}</p>
         ) : (
-          <form onSubmit={handleSubmit} className="mb-8">
+          <form onSubmit={handleSubmit} className="mb-8" encType="multipart/form-data">
             <div className="mb-4">
               <label className="block text-sm font-bold mb-2" htmlFor="date">
                 Date
@@ -130,6 +149,26 @@ function EditComplaint() {
                 onChange={handleChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2" htmlFor="image">
+                Upload Image
+              </label>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                accept="image/*"
+              />
+              {formData.image && !(formData.image instanceof File) && (
+                <img
+                  src={`http://localhost:3147/${formData.image}`}
+                  alt="Complaint"
+                  className="w-16 h-16 object-cover rounded-md mt-2"
+                />
+              )}
             </div>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <button
