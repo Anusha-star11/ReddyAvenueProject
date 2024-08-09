@@ -50,7 +50,7 @@ export default function SignUp() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Sign Up</h1>
           <p className="text-sm mt-5">
-            This is a demo project. You can sign up with your email and password or with Google.
+            You can sign up with your email and password.
           </p>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>

@@ -51,7 +51,7 @@ export const signin=async(req,res,next)=>{
         }
 
         const token=jwt.sign(
-            {id:validUser._id, email: validUser.email},process.env.JWT_SECRET, { expiresIn: '1h' });
+            {id:validUser._id, email: validUser.email,isAdmin:validUser.isAdmin},process.env.JWT_SECRET, { expiresIn: '1h' });
         const {password:pass, ...rest}=validUser._doc;
         res
         .status(200)
@@ -65,7 +65,8 @@ export const signin=async(req,res,next)=>{
             user: {
                 id: validUser._id,
                 username: validUser.username,
-                email: validUser.email
+                email: validUser.email,
+                isAdmin:validUser.isAdmin,
             }
     })
     console.log('Cookie set:', res.getHeader('Set-Cookie')); 

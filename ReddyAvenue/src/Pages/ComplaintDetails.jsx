@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function ComplaintDetails() {
   const { id } = useParams();
@@ -12,9 +13,10 @@ function ComplaintDetails() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const {currentUser}=useSelector(state=>state.user)
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
@@ -110,7 +112,7 @@ function ComplaintDetails() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div className="mb-4">
+          {currentUser.user.isAdmin && <div className="mb-4">
             <label className="block text-sm font-bold mb-2" htmlFor="status">
               Status
             </label>
@@ -122,7 +124,8 @@ function ComplaintDetails() {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
-          </div>
+          </div>}
+          
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {successMessage && <p className="text-green-500">{successMessage}</p>}
           <button
