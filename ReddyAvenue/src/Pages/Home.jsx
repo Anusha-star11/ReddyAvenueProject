@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaRegListAlt, FaRegEdit } from 'react-icons/fa';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -12,14 +13,16 @@ function HomePage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white">
       <div className="flex flex-grow">
         {/* Sidebar */}
-        <div className="w-1/4 bg-gray-200 p-4">
-          {/* <h2 className="text-2xl font-bold mb-4 text-gray-800">Menu</h2> */}
+        <div className="w-1/4 bg-gray-600 p-4">
+          <h2 className="text-2xl font-bold mb-4 text-yellow-500">Menu</h2>
           <ul>
-            <li className="mb-2">
-              <a href="/complaints" className="text-gray-800 hover:text-yellow-500">View All Complaints</a>
+            <li className="mb-4 flex items-center">
+              <FaRegListAlt className="mr-3 text-yellow-500 text-xl" />
+              <a href="/complaints" className="text-lg font-semibold text-gray-100 hover:text-yellow-500">View All Complaints</a>
             </li>
-            <li className="mb-2">
-              <a href="#posts" className="text-gray-800 hover:text-yellow-500">Posts</a>
+            <li className="mb-4 flex items-center">
+              <FaRegEdit className="mr-3 text-yellow-500 text-xl" />
+              <a href="#posts" className="text-lg font-semibold text-gray-100 hover:text-yellow-500">Posts</a>
             </li>
           </ul>
         </div>
@@ -36,12 +39,9 @@ function HomePage() {
               Raise a Complaint
             </button>
           </div>
-
-        
         </div>
       </div>
 
-     
       <footer className="bg-gray-800 text-center py-2 w-full">
         <p>© 2024 Reddy Avenue Colony. All rights reserved.</p>
       </footer>

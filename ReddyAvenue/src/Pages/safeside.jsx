@@ -2,32 +2,27 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-function ComplaintDetails() {
+function safeside() {
   const { id } = useParams();
   const [formData, setFormData] = useState({
     date: '',
     complaint: '',
     raisedBy: '',
-    status: '',
-    image: null, // New field for image
+    status: ''
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { currentUser } = useSelector(state => state.user);
+  const {currentUser}=useSelector(state=>state.user)
 
   const handleChange = (e) => {
-    if (e.target.name === 'image') {
-      setFormData({ ...formData, image: e.target.files[0] }); // Handle file input
-    } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.complaint || !formData.raisedBy || !formData.date) {
+    if (!formData.complaint || !formData.raisedBy || !formData.status) {
       setSuccessMessage(null);
       return setErrorMessage("Please fill all fields");
     }
@@ -36,21 +31,13 @@ function ComplaintDetails() {
       setLoading(true);
       setErrorMessage(null);
       const baseURL = "http://localhost:3147";
-      const formDataToSend = new FormData(); // Use FormData for file upload
-      formDataToSend.append('date', formData.date);
-      formDataToSend.append('complaint', formData.complaint);
-      formDataToSend.append('raisedBy', formData.raisedBy);
-      formDataToSend.append('status', formData.status || 'pending');
-      if (formData.image) {
-        formDataToSend.append('image', formData.image); // Append image to form data
-      }
-
+      console.log('Sending request to:', `${baseURL}/api/complaint/createcomplaint`);
       const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
-        body: formDataToSend,
-        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        credentials: 'include', 
       });
-
       const data = await res.json();
       console.log(data);
       if (data.success === false) {
@@ -66,8 +53,7 @@ function ComplaintDetails() {
           date: '',
           complaint: '',
           raisedBy: '',
-          status: '',
-          image: null,
+          status: ''
         });
 
         // Set timeout to clear success message after 5 seconds
@@ -140,20 +126,6 @@ function ComplaintDetails() {
             />
           </div>}
           
-          <div className="mb-4">
-            <label className="block text-sm font-bold mb-2" htmlFor="image">
-              Upload Image
-            </label>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              accept="image/*"
-            />
-          </div>
-          
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {successMessage && <p className="text-green-500">{successMessage}</p>}
           <button
@@ -169,4 +141,72 @@ function ComplaintDetails() {
   );
 }
 
-export default ComplaintDetails;
+export default safeside;
+
+import Complaint from '../models/complaint.model.js';
+import { errorHandler } from "../utils/error.js";
+import bodyParser from 'body-parser';
+import jwt from 'jsonwebtoken';
+
+export const createComplaint = async (req, res, next) => {
+  console.log(req.body)
+    if (!req.body.complaint || !req.body.raisedBy || !req.body.date) {
+        return next(errorHandler(400, "Please provide all required fields"));
+    }
+
+    const newComplaint = new Complaint({
+        ...req.body,
+        
+    });
+
+    try {
+        const savedComplaint = await newComplaint.save();
+        res.status(201).json(savedComplaint);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getAllComplaints = async (req, res, next) => {
+    try {
+        const complaints = await Complaint.find();
+        res.status(200).json(complaints);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+export const updateComplaint = async (req, res, next) => {
+    try {
+      const updatedComplaint = await Complaint.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      if (!updatedComplaint) return next(errorHandler(404, "Complaint not found"));
+      res.status(200).json(updatedComplaint);
+    } catch (error) {
+      next(error);
+    }
+  };
+  
+  export const deleteComplaint = async (req, res, next) => {
+    try {
+      const deletedComplaint = await Complaint.findByIdAndDelete(req.params.id);
+      if (!deletedComplaint) return next(errorHandler(404, "Complaint not found"));
+      res.status(200).json({ message: "Complaint deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+  
+  export const getComplaintById = async (req, res, next) => {
+    try {
+      const complaint = await Complaint.findById(req.params.id);
+      if (!complaint) return next(errorHandler(404, "Complaint not found"));
+      res.status(200).json(complaint);
+    } catch (error) {
+      next(error);
+    }
+  };

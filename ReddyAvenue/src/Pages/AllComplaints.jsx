@@ -9,11 +9,11 @@ function AllComplaints() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [filters, setFilters] = useState({
     date: '',
-    raisedByOrder: '', // This will hold the sorting order for the "Raised By" column
+    raisedByOrder: '',
     status: '',
   });
   const navigate = useNavigate();
-  const {currentUser}=useSelector(state=>state.user);
+  const { currentUser } = useSelector(state => state.user);
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -21,11 +21,11 @@ function AllComplaints() {
         const baseURL = "http://localhost:3147";
         const res = await fetch(`${baseURL}/api/complaint/allcomplaints`, {
           method: "GET",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
-          credentials: 'include', 
+          credentials: 'include',
         });
         const data = await res.json();
         if (res.ok) {
@@ -50,11 +50,11 @@ function AllComplaints() {
         const baseURL = "http://localhost:3147";
         const res = await fetch(`${baseURL}/api/complaint/deletecomplaint/${id}`, {
           method: "DELETE",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${localStorage.getItem('token')}`
           },
-          credentials: 'include', 
+          credentials: 'include',
         });
         if (res.ok) {
           const updatedComplaints = complaints.filter(complaint => complaint._id !== id);
@@ -110,11 +110,11 @@ function AllComplaints() {
   };
 
   const formatDate = (dateString) => {
-    return dateString.split('T')[0]; // Extract only the date portion (YYYY-MM-DD)
+    return dateString.split('T')[0];
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800 p-8">
+    <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-3xl font-bold mb-4">All Complaints</h2>
         {loading ? (
@@ -125,49 +125,12 @@ function AllComplaints() {
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr className="bg-gray-100">
-                <th className="py-2 px-4 border border-gray-300 text-left">
-                  Date
-                  <input 
-                    type="date" 
-                    name="date" 
-                    value={filters.date} 
-                    onChange={handleFilterChange} 
-                    className="block mt-1 w-full"
-                  />
-                </th>
-                <th className="py-2 px-4 border border-gray-300 text-left">
-                  Complaint
-                </th>
-                <th className="py-2 px-4 border border-gray-300 text-left">
-                  Raised By
-                  <select 
-                    name="raisedByOrder" 
-                    value={filters.raisedByOrder} 
-                    onChange={handleFilterChange} 
-                    className="block mt-1 w-full"
-                  >
-                    <option value="">Sort by</option>
-                    <option value="A-Z">A to Z</option>
-                    <option value="Z-A">Z to A</option>
-                  </select>
-                </th>
-                <th className="py-2 px-4 border border-gray-300 text-left">
-                  Status
-                  <select 
-                    name="status" 
-                    value={filters.status} 
-                    onChange={handleFilterChange} 
-                    className="block mt-1 w-full"
-                  >
-                    <option value="">All</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Resolved">Resolved</option>
-                  </select>
-                </th>
-                {currentUser.user.isAdmin && <th className="py-2 px-4 border border-gray-300 text-left">
-                  Actions
-                </th>}
-                
+                <th className="py-2 px-4 border border-gray-300 text-left">Date</th>
+                <th className="py-2 px-4 border border-gray-300 text-left">Complaint</th>
+                <th className="py-2 px-4 border border-gray-300 text-left">Raised By</th>
+                <th className="py-2 px-4 border border-gray-300 text-left">Status</th>
+                <th className="py-2 px-4 border border-gray-300 text-left">Image</th> {/* New Image Column */}
+                {currentUser.user.isAdmin && <th className="py-2 px-4 border border-gray-300 text-left">Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -179,6 +142,18 @@ function AllComplaints() {
                   </td>
                   <td className="border px-4 py-2">{complaint.raisedBy}</td>
                   <td className="border px-4 py-2">{complaint.status}</td>
+                  <td className="border px-4 py-2">
+                      {complaint.image ? (
+                      <img
+                        src={`http://localhost:3147/${complaint.image}`}
+                        alt="Complaint"
+                        className="w-16 h-16 object-cover rounded-md"
+                      />
+                    ) : (
+                      <span>No Image</span>
+                    )}
+                    </td>
+ {/* Display the Image */}
                   {currentUser.user.isAdmin && <td className="border px-4 py-2 flex items-center">
                     <button 
                       onClick={() => handleEdit(complaint._id)} 
@@ -193,7 +168,6 @@ function AllComplaints() {
                       Delete
                     </button>
                   </td>}
-                  
                 </tr>
               ))}
             </tbody>

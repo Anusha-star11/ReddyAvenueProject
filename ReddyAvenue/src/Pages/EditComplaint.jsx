@@ -70,7 +70,7 @@ function EditComplaint() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800 p-8">
+    <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <h2 className="text-3xl font-bold mb-4">Edit Complaint</h2>
         {loading ? (
