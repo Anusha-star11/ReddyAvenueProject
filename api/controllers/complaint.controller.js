@@ -17,17 +17,17 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: (req, file, cb) => {
     cb(null, uploadsDir); // Directory to store uploaded files
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname); // Generate a unique name for the file
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Set file size limit (5MB in this case)
+  limits: { fileSize: 100 * 1024 * 1024 }, // Set file size limit (50MB in this case)
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
@@ -37,13 +37,19 @@ const upload = multer({
   }
 }).array('images', 10); // Accept up to 10 images
 
+// Create Complaint
 export const createComplaint = async (req, res, next) => {
+ 
+  // Multer processes the request first
   upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       return next(errorHandler(500, `Multer error: ${err.message}`));
     } else if (err) {
       return next(errorHandler(500, `File upload failed: ${err.message}`));
     }
+
+    console.log('req.files:', req.files); // Should contain the array of files
+    console.log('req.body:', req.body); // Should contain non-file fields
 
     const { complaint, raisedBy, date, status } = req.body;
 
@@ -53,12 +59,14 @@ export const createComplaint = async (req, res, next) => {
 
     const imagePaths = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
 
+    console.log('Image paths to save:', imagePaths);
+
     const newComplaint = new Complaint({
       complaint,
       raisedBy,
       date,
       status: status || 'pending',
-      images: imagePaths, // Ensure images are stored here
+      images: imagePaths, // Store the image paths in the database
     });
 
     try {
@@ -74,10 +82,7 @@ export const createComplaint = async (req, res, next) => {
   });
 };
 
-
-
-// Other controller methods remain unchanged...
-
+// Get All Complaints
 export const getAllComplaints = async (req, res, next) => {
   try {
     const complaints = await Complaint.find();
@@ -87,11 +92,17 @@ export const getAllComplaints = async (req, res, next) => {
   }
 };
 
+// Update Complaint
 export const updateComplaint = async (req, res, next) => {
   upload(req, res, async function (err) {
-    if (err) {
+    if (err instanceof multer.MulterError) {
       return next(errorHandler(500, `Multer error: ${err.message}`));
+    } else if (err) {
+      return next(errorHandler(500, `File upload failed: ${err.message}`));
     }
+
+    console.log('req.files:', req.files); // Should contain the array of files
+    console.log('req.body:', req.body); // Should contain non-file fields
 
     const { complaint, raisedBy, date, status } = req.body;
 
@@ -124,6 +135,7 @@ export const updateComplaint = async (req, res, next) => {
   });
 };
 
+// Delete Complaint
 export const deleteComplaint = async (req, res, next) => {
   try {
     const deletedComplaint = await Complaint.findByIdAndDelete(req.params.id);
@@ -134,6 +146,7 @@ export const deleteComplaint = async (req, res, next) => {
   }
 };
 
+// Get Complaint By ID
 export const getComplaintById = async (req, res, next) => {
   try {
     const complaint = await Complaint.findById(req.params.id);

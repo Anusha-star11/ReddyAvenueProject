@@ -4,9 +4,12 @@ import { verifyToken } from '../utils/verifyUser.js';
 
 
 
+
 const router=express.Router();
 
-router.post("/createcomplaint",verifyToken, createComplaint);
+
+
+router.post("/createcomplaint",verifyToken,createComplaint);
 router.get('/allcomplaints', getAllComplaints);
 router.put('/updatecomplaint/:id',verifyToken, updateComplaint);
 router.delete('/deletecomplaint/:id',verifyToken,  deleteComplaint);
