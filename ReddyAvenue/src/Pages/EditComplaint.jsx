@@ -9,7 +9,7 @@ function EditComplaint() {
     complaint: '',
     raisedBy: '',
     status: '',
-    image: null, // New field for image
+    images: [], // Updated to handle multiple images
   });
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -33,7 +33,7 @@ function EditComplaint() {
             complaint: data.complaint,
             raisedBy: data.raisedBy,
             status: data.status,
-            image: data.image,
+            images: data.images || [], // Ensure images is an array
           });
         } else {
           setErrorMessage(data.message);
@@ -49,11 +49,22 @@ function EditComplaint() {
   }, [id]);
 
   const handleChange = (e) => {
-    if (e.target.name === 'image') {
-      setFormData({ ...formData, image: e.target.files[0] }); // Handle file input
+    if (e.target.name === 'images') {
+      const selectedFiles = Array.from(e.target.files);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        images: [...prevFormData.images, ...selectedFiles],
+      }));
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
+  };
+
+  const handleDeleteImage = (index) => {
+    setFormData((prevFormData) => {
+      const updatedImages = prevFormData.images.filter((_, i) => i !== index);
+      return { ...prevFormData, images: updatedImages };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -65,9 +76,12 @@ function EditComplaint() {
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
       formDataToSend.append('status', formData.status);
-      if (formData.image instanceof File) { // Check if a new image is uploaded
-        formDataToSend.append('image', formData.image);
-      }
+
+      formData.images.forEach((image) => {
+        if (image instanceof File) { // Only append if the image is a new File
+          formDataToSend.append('images', image);
+        }
+      });
 
       const res = await fetch(`${baseURL}/api/complaint/updatecomplaint/${id}`, {
         method: "PUT",
@@ -151,25 +165,48 @@ function EditComplaint() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold mb-2" htmlFor="image">
-                Upload Image
+              <label className="block text-sm font-bold mb-2" htmlFor="images">
+                Upload Images
               </label>
               <input
                 type="file"
-                id="image"
-                name="image"
+                id="images"
+                name="images"
                 onChange={handleChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 accept="image/*"
+                multiple
               />
-              {formData.image && !(formData.image instanceof File) && (
-                <img
-                  src={`http://localhost:3147/${formData.image}`}
-                  alt="Complaint"
-                  className="w-16 h-16 object-cover rounded-md mt-2"
-                />
+              {/* Display currently stored images with delete option */}
+              {formData.images.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="block text-sm font-bold mb-2">Current Images:</h3>
+                  <ul>
+                    {formData.images.map((image, index) => (
+                      <li key={index} className="flex items-center">
+                        {!(image instanceof File) ? (
+                          <img
+                            src={`http://localhost:3147/${image}`}
+                            alt={`Complaint ${index}`}
+                            className="w-16 h-16 object-cover rounded-md mr-4"
+                          />
+                        ) : (
+                          <span className="mr-4">{image.name}</span>
+                        )}
+                        <button
+                          type="button"
+                          className="bg-red-500 text-white px-2 py-1 rounded"
+                          onClick={() => handleDeleteImage(index)}
+                        >
+                          Delete
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
+
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <button
               type="submit"

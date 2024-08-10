@@ -8,7 +8,7 @@ function ComplaintDetails() {
     date: '',
     complaint: '',
     raisedBy: '',
-    status: '',
+    status: 'pending', // Default status
     images: [], // Initialize images as an array
   });
   const [errorMessage, setErrorMessage] = useState(null);
@@ -46,16 +46,11 @@ function ComplaintDetails() {
       formDataToSend.append('date', formData.date);
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
-      formDataToSend.append('status', formData.status || 'pending');
+      formDataToSend.append('status', formData.status);
   
       formData.images.forEach((image) => {
         formDataToSend.append('images', image);
       });
-  
-      // Log FormData to verify multiple files are being appended
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(`${key}:`, value);
-      }
   
       const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
@@ -75,7 +70,7 @@ function ComplaintDetails() {
         date: '',
         complaint: '',
         raisedBy: '',
-        status: '',
+        status: 'pending',
         images: [],
       });
   
@@ -139,14 +134,17 @@ function ComplaintDetails() {
               <label className="block text-sm font-bold mb-2" htmlFor="status">
                 Status
               </label>
-              <input
-                type="text"
+              <select
                 id="status"
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+              >
+                <option value="pending">Pending</option>
+                <option value="inprogress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
             </div>
           )}
 
@@ -161,7 +159,7 @@ function ComplaintDetails() {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               accept="image/*"
-              multiple // Ensure multiple image upload is allowed
+              multiple
             />
           </div>
 
