@@ -13,6 +13,10 @@ function AllComplaints() {
     status: '',
     complaintSearch: '', // Added for complaint name search
   });
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const navigate = useNavigate();
   const { currentUser } = useSelector(state => state.user);
 
@@ -120,6 +124,30 @@ function AllComplaints() {
     return dateString.split('T')[0];
   };
 
+  const handleImageClick = (images) => {
+    setSelectedImages(images);
+    setCurrentImageIndex(0); // Start from the first image
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedImages([]);
+    setCurrentImageIndex(0);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === selectedImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? selectedImages.length - 1 : prevIndex - 1
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800 p-8">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-8">
@@ -196,11 +224,12 @@ function AllComplaints() {
                     <td className="border px-4 py-2">{complaint.raisedBy}</td>
                     <td className="border px-4 py-2">{complaint.status}</td>
                     <td className="border px-4 py-2">
-                      {complaint.image ? (
+                      {complaint.images && complaint.images.length > 0 ? (
                         <img
-                          src={`http://localhost:3147/${complaint.image}`}
+                          src={`http://localhost:3147/${complaint.images[0]}`}
                           alt="Complaint"
-                          className="w-16 h-16 object-cover rounded-md"
+                          className="w-16 h-16 object-cover rounded-md cursor-pointer"
+                          onClick={() => handleImageClick(complaint.images)}
                         />
                       ) : (
                         <span>No Image</span>
@@ -229,6 +258,42 @@ function AllComplaints() {
           </div>
         )}
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
+          <div className="bg-white py-8 px-6 rounded-lg max-w-3xl w-full relative">
+            <button 
+              className="absolute top-4 right-4 text-gray-700 hover:text-gray-900"
+              onClick={closeModal}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="flex items-center justify-between space-x-2">
+              <button 
+                className="text-gray-700 hover:text-gray-900 focus:outline-none px-3 py-2 bg-white rounded-full shadow-lg"
+                onClick={handlePrevImage}
+              >
+                &lt; {/* Left Arrow */}
+              </button>
+              <div className="w-full flex justify-center">
+                <img
+                  src={`http://localhost:3147/${selectedImages[currentImageIndex]}`}
+                  alt={`Complaint ${currentImageIndex + 1}`}
+                  className="max-h-[450px] object-cover rounded-lg"
+                />
+              </div>
+              <button 
+                className="text-gray-700 hover:text-gray-900 focus:outline-none px-3 py-2 bg-white rounded-full shadow-lg"
+                onClick={handleNextImage}
+              >
+                &gt; {/* Right Arrow */}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
