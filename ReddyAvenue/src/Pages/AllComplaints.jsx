@@ -11,6 +11,7 @@ function AllComplaints() {
     date: '',
     raisedByOrder: '',
     status: '',
+    complaintSearch: '', // Added for complaint name search
   });
   const navigate = useNavigate();
   const { currentUser } = useSelector(state => state.user);
@@ -106,6 +107,12 @@ function AllComplaints() {
       filteredData = filteredData.filter(complaint => complaint.status.toLowerCase() === appliedFilters.status.toLowerCase());
     }
 
+    if (appliedFilters.complaintSearch) {
+      filteredData = filteredData.filter(complaint =>
+        complaint.complaint.toLowerCase().includes(appliedFilters.complaintSearch.toLowerCase())
+      );
+    }
+
     setFilteredComplaints(filteredData);
   };
 
@@ -114,64 +121,112 @@ function AllComplaints() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-3xl font-bold mb-4">All Complaints</h2>
+    <div className="min-h-screen bg-gray-100 text-gray-800 p-8">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h2 className="text-3xl font-bold mb-6 text-center">All Complaints</h2>
         {loading ? (
           <p>Loading...</p>
         ) : errorMessage ? (
-          <p className="text-red-500">{errorMessage}</p>
+          <p className="text-red-500 text-center">{errorMessage}</p>
         ) : (
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="py-2 px-4 border border-gray-300 text-left">Date</th>
-                <th className="py-2 px-4 border border-gray-300 text-left">Complaint</th>
-                <th className="py-2 px-4 border border-gray-300 text-left">Raised By</th>
-                <th className="py-2 px-4 border border-gray-300 text-left">Status</th>
-                <th className="py-2 px-4 border border-gray-300 text-left">Image</th> {/* New Image Column */}
-                {currentUser.user.isAdmin && <th className="py-2 px-4 border border-gray-300 text-left">Actions</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredComplaints.map((complaint) => (
-                <tr key={complaint._id} className="odd:bg-white even:bg-gray-50">
-                  <td className="border px-4 py-2">{formatDate(complaint.date)}</td>
-                  <td className="border px-4 py-2 max-w-xs">
-                    <span className="truncate block">{complaint.complaint}</span>
-                  </td>
-                  <td className="border px-4 py-2">{complaint.raisedBy}</td>
-                  <td className="border px-4 py-2">{complaint.status}</td>
-                  <td className="border px-4 py-2">
-                      {complaint.image ? (
-                      <img
-                        src={`http://localhost:3147/${complaint.image}`}
-                        alt="Complaint"
-                        className="w-16 h-16 object-cover rounded-md"
-                      />
-                    ) : (
-                      <span>No Image</span>
-                    )}
-                    </td>
- {/* Display the Image */}
-                  {currentUser.user.isAdmin && <td className="border px-4 py-2 flex items-center">
-                    <button 
-                      onClick={() => handleEdit(complaint._id)} 
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Date
+                    <input 
+                      type="date" 
+                      name="date"
+                      value={filters.date}
+                      onChange={handleFilterChange}
+                      className="block mt-1 w-full border border-gray-300 rounded-md"
+                    />
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Complaint
+                    <input 
+                      type="text" 
+                      name="complaintSearch"
+                      placeholder="Search by name"
+                      value={filters.complaintSearch}
+                      onChange={handleFilterChange}
+                      className="block mt-1 w-full border border-gray-300 rounded-md"
+                    />
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Raised By
+                    <select 
+                      name="raisedByOrder" 
+                      value={filters.raisedByOrder} 
+                      onChange={handleFilterChange}
+                      className="block mt-1 w-full border border-gray-300 rounded-md"
                     >
-                      Edit
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(complaint._id)} 
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                      <option value="">Sort</option>
+                      <option value="A-Z">A-Z</option>
+                      <option value="Z-A">Z-A</option>
+                    </select>
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">
+                    Status
+                    <select 
+                      name="status" 
+                      value={filters.status} 
+                      onChange={handleFilterChange}
+                      className="block mt-1 w-full border border-gray-300 rounded-md"
                     >
-                      Delete
-                    </button>
-                  </td>}
+                      <option value="">Filter</option>
+                      <option value="Open">Open</option>
+                      <option value="Closed">Closed</option>
+                    </select>
+                  </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">Image</th>
+                  {currentUser.user.isAdmin && (
+                    <th className="py-2 px-4 border border-gray-300 text-left">Actions</th>
+                  )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredComplaints.map((complaint) => (
+                  <tr key={complaint._id} className="odd:bg-white even:bg-gray-50">
+                    <td className="border px-4 py-2">{formatDate(complaint.date)}</td>
+                    <td className="border px-4 py-2 max-w-xs">
+                      <span className="truncate block">{complaint.complaint}</span>
+                    </td>
+                    <td className="border px-4 py-2">{complaint.raisedBy}</td>
+                    <td className="border px-4 py-2">{complaint.status}</td>
+                    <td className="border px-4 py-2">
+                      {complaint.image ? (
+                        <img
+                          src={`http://localhost:3147/${complaint.image}`}
+                          alt="Complaint"
+                          className="w-16 h-16 object-cover rounded-md"
+                        />
+                      ) : (
+                        <span>No Image</span>
+                      )}
+                    </td>
+                    {currentUser.user.isAdmin && (
+                      <td className="border px-4 py-2 flex items-center">
+                        <button 
+                          onClick={() => handleEdit(complaint._id)} 
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(complaint._id)} 
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

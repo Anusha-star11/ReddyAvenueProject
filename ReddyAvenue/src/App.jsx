@@ -12,6 +12,7 @@ import ComplaintDetails from './Pages/ComplaintDetails';
 import ComplaintsPage from './Pages/AllComplaints';
 import EditComplaint from './Pages/EditComplaint';
 import { signoutSuccess } from './redux/user/userSlice'; // Import the signoutSuccess action
+import FrontPage from './Pages/FrontPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
+      <Route path="/" element={<FrontPage/>} />
       <Route element={<OnlyAdminPrivateRoute/>}>
         <Route path="/sign-up" element={<SignUp />} />
         </Route>
@@ -44,7 +46,7 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/complaint/new" element={<ComplaintDetails />} />
           <Route path="/complaint/:id" element={<ComplaintDetails />} />

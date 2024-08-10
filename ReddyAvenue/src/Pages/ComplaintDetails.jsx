@@ -9,7 +9,7 @@ function ComplaintDetails() {
     complaint: '',
     raisedBy: '',
     status: '',
-    image: null, // New field for image
+    images: [], // Initialize images as an array
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -17,8 +17,13 @@ function ComplaintDetails() {
   const { currentUser } = useSelector(state => state.user);
 
   const handleChange = (e) => {
-    if (e.target.name === 'image') {
-      setFormData({ ...formData, image: e.target.files[0] }); // Handle file input
+    if (e.target.name === 'images') {
+      // Append new files to the existing files in formData.images
+      const selectedFiles = Array.from(e.target.files);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        images: [...prevFormData.images, ...selectedFiles],
+      }));
     } else {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     }
@@ -26,61 +31,64 @@ function ComplaintDetails() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!formData.complaint || !formData.raisedBy || !formData.date) {
       setSuccessMessage(null);
       return setErrorMessage("Please fill all fields");
     }
-
+  
     try {
       setLoading(true);
       setErrorMessage(null);
       const baseURL = "http://localhost:3147";
-      const formDataToSend = new FormData(); // Use FormData for file upload
+      const formDataToSend = new FormData();
+  
       formDataToSend.append('date', formData.date);
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
       formDataToSend.append('status', formData.status || 'pending');
-      if (formData.image) {
-        formDataToSend.append('image', formData.image); // Append image to form data
+  
+      formData.images.forEach((image) => {
+        formDataToSend.append('images', image);
+      });
+  
+      // Log FormData to verify multiple files are being appended
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log(`${key}:`, value);
       }
-
+  
       const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
         body: formDataToSend,
         credentials: 'include',
       });
-
+  
       const data = await res.json();
-      console.log(data);
-      if (data.success === false) {
+      if (!res.ok) {
         setLoading(false);
-        setSuccessMessage(null);
         return setErrorMessage(data.message);
       }
+  
       setLoading(false);
-      if (res.ok) {
-        setErrorMessage(null);
-        setSuccessMessage("Complaint added successfully");
-        setFormData({
-          date: '',
-          complaint: '',
-          raisedBy: '',
-          status: '',
-          image: null,
-        });
-
-        // Set timeout to clear success message after 5 seconds
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 3000);
-      }
+      setSuccessMessage(`Complaint added successfully with ${formData.images.length} image(s)`);
+      setFormData({
+        date: '',
+        complaint: '',
+        raisedBy: '',
+        status: '',
+        images: [],
+      });
+  
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
     } catch (error) {
       setErrorMessage(error.message);
       setSuccessMessage(null);
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
@@ -126,34 +134,49 @@ function ComplaintDetails() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          {currentUser.user.isAdmin && <div className="mb-4">
-            <label className="block text-sm font-bold mb-2" htmlFor="status">
-              Status
-            </label>
-            <input
-              type="text"
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>}
-          
+          {currentUser.user.isAdmin && (
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2" htmlFor="status">
+                Status
+              </label>
+              <input
+                type="text"
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+          )}
+
           <div className="mb-4">
-            <label className="block text-sm font-bold mb-2" htmlFor="image">
-              Upload Image
+            <label className="block text-sm font-bold mb-2" htmlFor="images">
+              Upload Images
             </label>
             <input
               type="file"
-              id="image"
-              name="image"
+              id="images"
+              name="images"
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               accept="image/*"
+              multiple // Ensure multiple image upload is allowed
             />
           </div>
-          
+
+          {/* Display the list of selected images */}
+          {formData.images.length > 0 && (
+            <div className="mb-4">
+              <h3 className="block text-sm font-bold mb-2">Selected Images:</h3>
+              <ul>
+                {formData.images.map((image, index) => (
+                  <li key={index}>{image.name}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {successMessage && <p className="text-green-500">{successMessage}</p>}
           <button

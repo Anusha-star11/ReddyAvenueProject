@@ -35,7 +35,7 @@ const upload = multer({
     }
     cb(null, true);
   }
-}).single('image');
+}).array('images', 10); // Accept up to 10 images
 
 export const createComplaint = async (req, res, next) => {
   upload(req, res, async function (err) {
@@ -51,19 +51,23 @@ export const createComplaint = async (req, res, next) => {
       return next(errorHandler(400, "Please provide all required fields"));
     }
 
-    const imagePath = req.file ? `uploads/${req.file.filename}` : undefined;
+    const imagePaths = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
 
     const newComplaint = new Complaint({
       complaint,
       raisedBy,
       date,
       status: status || 'pending',
-      image: imagePath || 'https://www.hostinger.com/tutorials/wp-content/uploads/sites/2/2021/09/how-to-write-a-blog-post.png',
+      images: imagePaths, // Ensure images are stored here
     });
 
     try {
       const savedComplaint = await newComplaint.save();
-      res.status(201).json(savedComplaint);
+      res.status(201).json({
+        message: "Complaint added successfully",
+        savedComplaint,
+        imagePaths,
+      });
     } catch (error) {
       next(error);
     }
@@ -71,10 +75,9 @@ export const createComplaint = async (req, res, next) => {
 };
 
 
+
 // Other controller methods remain unchanged...
 
-
-// Controller to get all complaints
 export const getAllComplaints = async (req, res, next) => {
   try {
     const complaints = await Complaint.find();
@@ -84,7 +87,6 @@ export const getAllComplaints = async (req, res, next) => {
   }
 };
 
-// Controller to update a complaint by ID
 export const updateComplaint = async (req, res, next) => {
   upload(req, res, async function (err) {
     if (err) {
@@ -93,9 +95,9 @@ export const updateComplaint = async (req, res, next) => {
 
     const { complaint, raisedBy, date, status } = req.body;
 
-    let imagePath = req.body.image; // The existing image path
-    if (req.file) {
-      imagePath = `uploads/${req.file.filename}`; // New image path
+    let imagePaths = req.body.images || []; // Existing images
+    if (req.files) {
+      imagePaths = imagePaths.concat(req.files.map(file => `uploads/${file.filename}`)); // Add new image paths
     }
 
     try {
@@ -106,7 +108,7 @@ export const updateComplaint = async (req, res, next) => {
           raisedBy,
           date,
           status,
-          image: imagePath,
+          images: imagePaths,
         },
         { new: true }
       );
@@ -122,7 +124,6 @@ export const updateComplaint = async (req, res, next) => {
   });
 };
 
-// Controller to delete a complaint by ID
 export const deleteComplaint = async (req, res, next) => {
   try {
     const deletedComplaint = await Complaint.findByIdAndDelete(req.params.id);
@@ -133,7 +134,6 @@ export const deleteComplaint = async (req, res, next) => {
   }
 };
 
-// Controller to get a complaint by ID
 export const getComplaintById = async (req, res, next) => {
   try {
     const complaint = await Complaint.findById(req.params.id);
