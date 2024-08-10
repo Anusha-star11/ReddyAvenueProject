@@ -11,7 +11,7 @@ function AllComplaints() {
     date: '',
     raisedByOrder: '',
     status: '',
-    complaintSearch: '', // Added for complaint name search
+    complaintSearch: '',
   });
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -126,7 +126,7 @@ function AllComplaints() {
 
   const handleImageClick = (images) => {
     setSelectedImages(images);
-    setCurrentImageIndex(0); // Start from the first image
+    setCurrentImageIndex(0);
     setIsModalOpen(true);
   };
 
@@ -204,10 +204,12 @@ function AllComplaints() {
                       className="block mt-1 w-full border border-gray-300 rounded-md"
                     >
                       <option value="">Filter</option>
-                      <option value="Open">Open</option>
-                      <option value="Closed">Closed</option>
+                      <option value="pending">Pending</option>
+                      <option value="inprogress">In Progress</option>
+                      <option value="resolved">Resolved</option>
                     </select>
                   </th>
+                  <th className="py-2 px-4 border border-gray-300 text-left">Comment</th>
                   <th className="py-2 px-4 border border-gray-300 text-left">Image</th>
                   {currentUser.user.isAdmin && (
                     <th className="py-2 px-4 border border-gray-300 text-left">Actions</th>
@@ -223,6 +225,7 @@ function AllComplaints() {
                     </td>
                     <td className="border px-4 py-2">{complaint.raisedBy}</td>
                     <td className="border px-4 py-2">{complaint.status}</td>
+                    <td className="border px-4 py-2">{complaint.comment}</td>
                     <td className="border px-4 py-2">
                       {complaint.images && complaint.images.length > 0 ? (
                         <img

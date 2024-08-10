@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // Set file size limit (50MB in this case)
+  limits: { fileSize: 100 * 1024 * 1024 }, // Set file size limit (100MB in this case)
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
@@ -39,7 +39,6 @@ const upload = multer({
 
 // Create Complaint
 export const createComplaint = async (req, res, next) => {
- 
   // Multer processes the request first
   upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
@@ -51,7 +50,7 @@ export const createComplaint = async (req, res, next) => {
     console.log('req.files:', req.files); // Should contain the array of files
     console.log('req.body:', req.body); // Should contain non-file fields
 
-    const { complaint, raisedBy, date, status } = req.body;
+    const { complaint, raisedBy, date, status, comment } = req.body;
 
     if (!complaint || !raisedBy || !date) {
       return next(errorHandler(400, "Please provide all required fields"));
@@ -67,6 +66,7 @@ export const createComplaint = async (req, res, next) => {
       date,
       status: status || 'pending',
       images: imagePaths, // Store the image paths in the database
+      comment, // Add comment field
     });
 
     try {
@@ -101,12 +101,10 @@ export const updateComplaint = async (req, res, next) => {
       return next(errorHandler(500, `File upload failed: ${err.message}`));
     }
 
-    console.log('req.files:', req.files); // Should contain the array of files
-    console.log('req.body:', req.body); // Should contain non-file fields
+    const { complaint, raisedBy, date, status, comment } = req.body;
 
-    const { complaint, raisedBy, date, status } = req.body;
-
-    let imagePaths = req.body.images || []; // Existing images
+    // Combine existing images and new uploads
+    let imagePaths = req.body.existingImages || []; // Handle existing images
     if (req.files) {
       imagePaths = imagePaths.concat(req.files.map(file => `uploads/${file.filename}`)); // Add new image paths
     }
@@ -120,6 +118,7 @@ export const updateComplaint = async (req, res, next) => {
           date,
           status,
           images: imagePaths,
+          comment,
         },
         { new: true }
       );
@@ -134,6 +133,7 @@ export const updateComplaint = async (req, res, next) => {
     }
   });
 };
+
 
 // Delete Complaint
 export const deleteComplaint = async (req, res, next) => {

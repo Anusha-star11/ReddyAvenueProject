@@ -129,7 +129,7 @@ function AllComplaints() {
             <table className="min-w-full bg-white border border-gray-200 text-xs sm:text-sm">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="py-1 sm:py-2 px-2 sm:px-4 border border-gray-300 text-left">
+                  <th className="py-1 sm:py-2 px-2 sm:px-4 border border-gray-300 text-left w-24 sm:w-32">
                     Date
                     <input 
                       type="date" 
@@ -139,7 +139,7 @@ function AllComplaints() {
                       className="block mt-1 w-full border border-gray-300 rounded-md text-xs sm:text-sm"
                     />
                   </th>
-                  <th className="py-1 sm:py-2 px-2 sm:px-4 border border-gray-300 text-left">
+                  <th className="py-1 sm:py-2 px-2 sm:px-4 border border-gray-300 text-left w-40 sm:w-64">
                     Complaint
                     <input 
                       type="text" 
@@ -177,18 +177,20 @@ function AllComplaints() {
                       <option value="resolved">Resolved</option>
                     </select>
                   </th>
+                  <th className="py-1 sm:py-2 px-2 sm:px-4 border border-gray-300 text-left">Comment</th>
                   <th className="py-1 sm:py-2 px-2 sm:px-4 border border-gray-300 text-left">Image</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredComplaints.map((complaint) => (
                   <tr key={complaint._id} className="odd:bg-white even:bg-gray-50">
-                    <td className="border px-2 sm:px-4 py-1 sm:py-2">{formatDate(complaint.date)}</td>
-                    <td className="border px-2 sm:px-4 py-1 sm:py-2 max-w-xs">
+                    <td className="border px-2 sm:px-4 py-1 sm:py-2 w-24 sm:w-32">{formatDate(complaint.date)}</td>
+                    <td className="border px-2 sm:px-4 py-1 sm:py-2 max-w-xs w-40 sm:w-64">
                       <span className="truncate block">{complaint.complaint}</span>
                     </td>
                     <td className="border px-2 sm:px-4 py-1 sm:py-2">{complaint.raisedBy}</td>
                     <td className="border px-2 sm:px-4 py-1 sm:py-2">{complaint.status}</td>
+                    <td className="border px-2 sm:px-4 py-1 sm:py-2">{complaint.comment}</td>
                     <td className="border px-2 sm:px-4 py-1 sm:py-2">
                       {complaint.images && complaint.images.length > 0 ? (
                         <img

@@ -10,6 +10,7 @@ function ComplaintDetails() {
     raisedBy: '',
     status: 'pending', // Default status
     images: [], // Initialize images as an array
+    comment: '', // Added comment field
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -47,6 +48,7 @@ function ComplaintDetails() {
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
       formDataToSend.append('status', formData.status);
+      formDataToSend.append('comment', formData.comment); // Append comment field
   
       formData.images.forEach((image) => {
         formDataToSend.append('images', image);
@@ -72,6 +74,7 @@ function ComplaintDetails() {
         raisedBy: '',
         status: 'pending',
         images: [],
+        comment: '', // Reset comment field
       });
   
       setTimeout(() => {
@@ -147,7 +150,19 @@ function ComplaintDetails() {
               </select>
             </div>
           )}
-
+          <div className="mb-4">
+            <label className="block text-sm font-bold mb-2" htmlFor="comment">
+              Comment
+            </label>
+            <input
+              type="text"
+              id="comment"
+              name="comment"
+              value={formData.comment}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-sm font-bold mb-2" htmlFor="images">
               Upload Images

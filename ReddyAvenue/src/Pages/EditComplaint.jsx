@@ -10,6 +10,7 @@ function EditComplaint() {
     raisedBy: '',
     status: '',
     images: [], // Updated to handle multiple images
+    comment: '', // Added comment field
   });
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -34,6 +35,7 @@ function EditComplaint() {
             raisedBy: data.raisedBy,
             status: data.status,
             images: data.images || [], // Ensure images is an array
+            comment: data.comment || '', // Ensure comment is handled
           });
         } else {
           setErrorMessage(data.message);
@@ -76,13 +78,17 @@ function EditComplaint() {
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
       formDataToSend.append('status', formData.status);
-
+      formDataToSend.append('comment', formData.comment); // Append comment to the formData
+  
+      // Append existing images' paths if they are not new files
       formData.images.forEach((image) => {
-        if (image instanceof File) { // Only append if the image is a new File
-          formDataToSend.append('images', image);
+        if (image instanceof File) {
+          formDataToSend.append('images', image); // New files to upload
+        } else {
+          formDataToSend.append('existingImages', image); // Existing images
         }
       });
-
+  
       const res = await fetch(`${baseURL}/api/complaint/updatecomplaint/${id}`, {
         method: "PUT",
         headers: { 
@@ -101,6 +107,7 @@ function EditComplaint() {
       setErrorMessage(error.message);
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
@@ -160,6 +167,19 @@ function EditComplaint() {
                 id="status"
                 name="status"
                 value={formData.status}
+                onChange={handleChange}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold mb-2" htmlFor="comment">
+                Comment
+              </label>
+              <input
+                type="text"
+                id="comment"
+                name="comment"
+                value={formData.comment}
                 onChange={handleChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />

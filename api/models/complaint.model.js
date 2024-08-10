@@ -23,6 +23,9 @@ const complaintSchema = new mongoose.Schema({
     default: 'pending',
     required:false,
   },
+  comment:{
+    type:String,
+  },
   images:{
     type:[String],
     default:[]
