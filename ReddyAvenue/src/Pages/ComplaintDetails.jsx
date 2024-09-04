@@ -54,6 +54,7 @@ function ComplaintDetails() {
         formDataToSend.append('images', image);
       });
   
+      // Step 1: Submit the complaint
       const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
         body: formDataToSend,
@@ -65,9 +66,24 @@ function ComplaintDetails() {
         setLoading(false);
         return setErrorMessage(data.message);
       }
+
+      // Step 2: Send WhatsApp notification after complaint is successfully added
+      const message = `New complaint raised: ${formData.complaint} by ${formData.raisedBy}.`;
+      await fetch(`${baseURL}/api/notify-whatsapp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "whatsapp:+1234567890", // Replace with the WhatsApp group number
+          message: message,
+        }),
+      });
   
       setLoading(false);
-      setSuccessMessage(`Complaint added successfully with ${formData.images.length} image(s)`);
+      setSuccessMessage(`Complaint added successfully with ${formData.images.length} image(s) and WhatsApp notification sent.`);
+
+      // Reset form data
       setFormData({
         date: '',
         complaint: '',

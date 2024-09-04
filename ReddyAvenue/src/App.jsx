@@ -13,6 +13,7 @@ import ComplaintsPage from './Pages/AllComplaints';
 import EditComplaint from './Pages/EditComplaint';
 import { signoutSuccess } from './redux/user/userSlice'; // Import the signoutSuccess action
 import FrontPage from './Pages/FrontPage';
+import Contact from './Pages/Contact';
 
 function App() {
   const dispatch = useDispatch();
@@ -46,8 +47,9 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/home" element={<FrontPage />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/complaint/new" element={<ComplaintDetails />} />
           <Route path="/complaint/:id" element={<ComplaintDetails />} />
           <Route path="/complaints" element={<ComplaintsPage />} />
