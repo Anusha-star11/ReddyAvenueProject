@@ -47,8 +47,8 @@ export const createComplaint = async (req, res, next) => {
       return next(errorHandler(500, `File upload failed: ${err.message}`));
     }
 
-    console.log('req.files:', req.files); // Should contain the array of files
-    console.log('req.body:', req.body); // Should contain non-file fields
+    // console.log('req.files:', req.files); // Should contain the array of files
+    // console.log('req.body:', req.body); // Should contain non-file fields
 
     const { complaint, raisedBy, date, status, comment } = req.body;
 
@@ -58,7 +58,7 @@ export const createComplaint = async (req, res, next) => {
 
     const imagePaths = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
 
-    console.log('Image paths to save:', imagePaths);
+    // console.log('Image paths to save:', imagePaths);
 
     const newComplaint = new Complaint({
       complaint,

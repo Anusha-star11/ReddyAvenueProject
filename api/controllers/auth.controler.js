@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 export const signup=async(req,res,next)=>{
 
     const {username,email,password}=req.body;
-    console.log(req.body);
+    // console.log(req.body);
     if(!username || !email || !password || username==='' || email==='' || password===''){
        next(errorHandler(400,'All fields are required'));
     }
@@ -20,7 +20,7 @@ export const signup=async(req,res,next)=>{
         email,
         password:hashedPassword,
     });
-    console.log(newUser);
+    // console.log(newUser);
     try{
         await newUser.save();
         res.json({success:true,

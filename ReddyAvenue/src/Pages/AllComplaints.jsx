@@ -178,7 +178,7 @@ function AllComplaints() {
                     <input 
                       type="text" 
                       name="complaintSearch"
-                      placeholder="Search by name"
+                      placeholder="Search by complaint"
                       value={filters.complaintSearch}
                       onChange={handleFilterChange}
                       className="block mt-1 w-full border border-gray-300 rounded-md"
