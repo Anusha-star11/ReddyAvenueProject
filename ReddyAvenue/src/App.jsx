@@ -47,7 +47,7 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/home" element={<FrontPage />} />
+          <Route path="/home" element={<ComplaintsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/complaint/new" element={<ComplaintDetails />} />

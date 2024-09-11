@@ -58,9 +58,10 @@ app.post('/api/notify-whatsapp', (req, res) => {
       res.status(200).json({ message: 'WhatsApp message sent successfully', sid: msg.sid });
     })
     .catch((error) => {
-      console.error(error);
-      res.status(500).json({ message: 'Failed to send WhatsApp message', error });
+      console.error('Twilio error response:', error);
+      res.status(500).json({ message: 'Failed to send WhatsApp message', error: error.message });
     });
+    
 });
 
 // Trigger a script (example: WhatsApp notifier script)

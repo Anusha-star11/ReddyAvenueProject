@@ -69,16 +69,23 @@ function ComplaintDetails() {
 
       // Step 2: Send WhatsApp notification after complaint is successfully added
       const message = `New complaint raised: ${formData.complaint} by ${formData.raisedBy}.`;
-      await fetch(`${baseURL}/api/notify-whatsapp`, {
+      const notifyRes = await fetch(`${baseURL}/api/notify-whatsapp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "whatsapp:+1234567890", // Replace with the WhatsApp group number
+          to: "+918125353350", // Replace with the WhatsApp group number
           message: message,
         }),
       });
+
+      const notifyData = await notifyRes.json();
+      if (!notifyRes.ok) {
+        console.error('WhatsApp API Error:', notifyData);
+        setLoading(false);
+        return setErrorMessage('Complaint added, but failed to send WhatsApp notification.');
+      }
   
       setLoading(false);
       setSuccessMessage(`Complaint added successfully with ${formData.images.length} image(s) and WhatsApp notification sent.`);
