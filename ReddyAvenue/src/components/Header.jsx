@@ -46,7 +46,7 @@ export default function Header() {
       <header className="bg-gradient-to-r from-orange-400 to-yellow-400 text-white shadow-lg">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="text-xl font-bold">
-            <a href="#" className="hover:text-blue-700">Reddy Avenue</a>
+            <a href="/home" className="hover:text-blue-700">Reddy Avenue</a>
           </div>
           <nav className="space-x-4 flex items-center">
             <a href="/home" className="hover:text-blue-700">Home</a>

@@ -25,7 +25,8 @@ const Contact = () => {
     ];
 
     return (
-        <div className="max-w-4xl mx-auto p-8 bg-gray-50 rounded-lg shadow-lg mt-10">
+        <div className="min-h-screen bg-gray-200 py-10">  
+        <div className="max-w-4xl mx-auto p-8 bg-gray-100 rounded-lg shadow-lg mt-10">
             <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Contact Details</h2>
             <table className="min-w-full bg-white border border-gray-300">
                 <thead className="bg-gray-100">
@@ -47,6 +48,7 @@ const Contact = () => {
                     ))}
                 </tbody>
             </table>
+        </div>
         </div>
     );
 };

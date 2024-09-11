@@ -107,8 +107,10 @@ function AllComplaints() {
       });
     }
 
-    if (appliedFilters.status) {
-      filteredData = filteredData.filter(complaint => complaint.status.toLowerCase() === appliedFilters.status.toLowerCase());
+    if (appliedFilters.status && appliedFilters.status !== "") {
+      filteredData = filteredData.filter(complaint => 
+        complaint.status.toLowerCase() === appliedFilters.status.toLowerCase()
+      );
     }
 
     if (appliedFilters.complaintSearch) {
@@ -203,7 +205,7 @@ function AllComplaints() {
                       onChange={handleFilterChange}
                       className="block mt-1 w-full border border-gray-300 rounded-md"
                     >
-                      <option value="">Filter</option>
+                      <option value="">All</option>
                       <option value="pending">Pending</option>
                       <option value="inprogress">In Progress</option>
                       <option value="resolved">Resolved</option>
