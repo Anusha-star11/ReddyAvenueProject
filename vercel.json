@@ -1,12 +1,25 @@
 {
+  "builds": [
+    {
+      "src": "api/index.js",   // Replace 'backend/server.js' with the path to your backend entry file
+      "use": "@vercel/node"
+    },
+    {
+      "src": "ReddyAvenue/package.json",   // Replace 'frontend/package.json' with the path to your frontend's package.json
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "ReddyAvenue/dist"   // Replace 'frontend/dist' with the path to your frontend's dist directory
+      }
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/index.js"   // Replace 'backend/server.js' with your backend entry file path
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/ReddyAvenue/dist/index.html"   // Replace 'frontend/dist/index.html' with your frontend's path
     }
   ]
 }
