@@ -29,7 +29,8 @@ mongoose
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }));
+const allowedOrigins = ["https://your-vercel-frontend-url.vercel.app"];
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // Routes for user, auth, and complaint
 app.use('/api/user', userRoutes);
