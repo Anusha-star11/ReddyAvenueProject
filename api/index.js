@@ -29,7 +29,7 @@ mongoose
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = ["https://reddy-avenue.vercel.app"];
+const allowedOrigins = ["https://reddy-avenue-mp6wzbzwl-anusha-star11s-projects.vercel.app"];
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 // Routes for user, auth, and complaint
