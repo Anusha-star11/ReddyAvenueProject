@@ -29,8 +29,18 @@ mongoose
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = ["https://reddy-avenue-mp6wzbzwl-anusha-star11s-projects.vercel.app"];
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+const allowedOrigins = ["https://reddy-avenue.vercel.app"];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 // Routes for user, auth, and complaint
 app.use('/api/user', userRoutes);
