@@ -1,29 +1,44 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "ReddyAvenue/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
+    { "src": "ReddyAvenue/package.json", "use": "@vercel/static-build" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "src": "/(.*)", "dest": "/frontend/$1" }
   ]
 }
+
+
+
+
+// {
+//   "version": 2,
+//   "builds": [
+//     {
+//       "src": "api/index.js",
+//       "use": "@vercel/node"
+//     },
+//     {
+//       "src": "ReddyAvenue/package.json",
+//       "use": "@vercel/static-build",
+//       "config": {
+//         "distDir": "dist"
+//       }
+//     }
+//   ],
+//   "routes": [
+//     {
+//       "src": "/api/(.*)",
+//       "dest": "/api/index.js"
+//     },
+//     {
+//       "src": "/(.*)",
+//       "dest": "/index.html"
+//     }
+//   ]
+// }
 
 // {
 //   "version":2,
