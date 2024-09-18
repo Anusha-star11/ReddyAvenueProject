@@ -19,7 +19,7 @@ function EditComplaint() {
     const fetchComplaint = async () => {
       try {
         const baseURL = "http://localhost:3147";
-        const res = await fetch(`${baseURL}/api/complaint/${id}`, {
+        const res = await fetch(`${import.meta.env.REACT_APP_API_BASE_URL}/api/complaint/${id}`, {
           method: "GET",
           headers: { 
             "Content-Type": "application/json",
@@ -89,7 +89,7 @@ function EditComplaint() {
         }
       });
   
-      const res = await fetch(`${baseURL}/api/complaint/updatecomplaint/${id}`, {
+      const res = await fetch(`${import.meta.env.REACT_APP_API_BASE_URL}/api/complaint/updatecomplaint/${id}`, {
         method: "PUT",
         headers: { 
           "Authorization": `Bearer ${localStorage.getItem('token')}`

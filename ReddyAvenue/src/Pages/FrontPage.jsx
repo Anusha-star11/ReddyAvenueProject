@@ -22,7 +22,7 @@ function AllComplaints() {
     const fetchComplaints = async () => {
       try {
         const baseURL = "http://localhost:3147";
-        const res = await fetch(`${baseURL}/api/complaint/allcomplaints`, {
+        const res = await fetch(`${import.meta.env.REACT_APP_API_BASE_URL}/api/complaint/allcomplaints`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
