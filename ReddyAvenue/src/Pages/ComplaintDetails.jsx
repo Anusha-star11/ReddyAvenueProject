@@ -55,7 +55,7 @@ function ComplaintDetails() {
       });
   
       // Step 1: Submit the complaint
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/complaint/createcomplaint`, {
+      const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
         body: formDataToSend,
         credentials: 'include',
@@ -69,7 +69,7 @@ function ComplaintDetails() {
 
       // Step 2: Send WhatsApp notification after complaint is successfully added
       const message = `New complaint raised: ${formData.complaint} by ${formData.raisedBy}.`;
-      const notifyRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/notify-whatsapp`, {
+      const notifyRes = await fetch(`${baseURL}/api/notify-whatsapp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

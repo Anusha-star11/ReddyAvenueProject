@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.route.js';
@@ -16,7 +17,6 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID; // Your Twilio Account SID
 const authToken = process.env.TWILIO_AUTH_TOKEN;   // Your Twilio Auth Token
 const client = twilio(accountSid, authToken);
 
-// MongoDB connection
 mongoose
   .connect(process.env.MONGO)
   .then(() => {
@@ -26,51 +26,45 @@ mongoose
     console.log(error);
   });
 
+const __dirname = path.resolve();
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = ["https://reddy-avenue.vercel.app"];
-app.use(cors({
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes for user, auth, and complaint
 app.use('/api/user', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/complaint', complaintRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/complaint", complaintRoutes);
 
-// Twilio WhatsApp message route
+app.use(express.static(path.join(__dirname, '/ReddyAvenue/dist')));
+
+// Route to trigger WhatsApp message via Twilio
 app.post('/api/notify-whatsapp', (req, res) => {
-  const { to, message } = req.body;
-  
+  const { to, message } = req.body; // Expects 'to' and 'message' in the request body
+  console.log(req.body)
   if (!to || !message) {
     return res.status(400).json({ message: 'Recipient and message content are required' });
   }
 
   client.messages
     .create({
-      from: 'whatsapp:+14155238886',
-      body: message,
-      to: `whatsapp:${to}`
+      from: 'whatsapp:+14155238886', // Twilio WhatsApp sandbox number
+      body: message, // The message you want to send
+      to: `whatsapp:${to}` // Recipient's WhatsApp number
     })
     .then((msg) => {
       res.status(200).json({ message: 'WhatsApp message sent successfully', sid: msg.sid });
     })
     .catch((error) => {
-      console.error('Twilio error:', error);
+      console.error('Twilio error response:', error);
       res.status(500).json({ message: 'Failed to send WhatsApp message', error: error.message });
     });
+    
 });
 
-// Trigger script execution
+// Trigger a script (example: WhatsApp notifier script)
 app.post('/api/run-script', (req, res) => {
   exec('node whatsappGroupNotifier.js', (err, stdout, stderr) => {
     if (err) {
@@ -82,7 +76,14 @@ app.post('/api/run-script', (req, res) => {
   });
 });
 
-// Error handling middleware
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, 'ReddyAvenue', 'dist', 'index.html'));
+});
+
+app.listen(3147, () => {
+  console.log("Server is running on port 3147!");
+});
+
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
@@ -92,5 +93,3 @@ app.use((err, req, res, next) => {
     message,
   });
 });
-
-export default app;  // Use export for Vercel serverless functions

@@ -23,7 +23,7 @@ export default function SignIn() {
     try {
       dispatch(signInStart());
       const baseURL = "http://localhost:3147";
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signin`, {
+      const res = await fetch(`${baseURL}/api/auth/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -23,8 +23,8 @@ function AllComplaints() {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        // const baseURL = "http://localhost:3147";
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/complaint/allcomplaints`, {
+        const baseURL = "http://localhost:3147";
+        const res = await fetch(`${baseURL}/api/complaint/allcomplaints`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ function AllComplaints() {
     if (window.confirm("Are you sure you want to delete this complaint?")) {
       try {
         const baseURL = "http://localhost:3147";
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/complaint/deletecomplaint/${id}`, {
+        const res = await fetch(`${baseURL}/api/complaint/deletecomplaint/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
