@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import baseURL from '../url';
 
 function ComplaintDetails() {
   const { id } = useParams();
@@ -41,7 +42,7 @@ function ComplaintDetails() {
     try {
       setLoading(true);
       setErrorMessage(null);
-      const baseURL = "http://localhost:3147";
+      // const baseURL = "http://localhost:3147";
       const formDataToSend = new FormData();
   
       formDataToSend.append('date', formData.date);

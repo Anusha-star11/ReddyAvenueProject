@@ -1,6 +1,7 @@
 import {  Label, Spinner, TextInput, Alert } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import baseURL from '../url';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -22,7 +23,7 @@ export default function SignUp() {
     try {
       setLoading(true);
       setErrorMessage(null);
-      const baseURL = "http://localhost:3147";
+      // const baseURL = "http://localhost:3147";
       const res = await fetch(`${baseURL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

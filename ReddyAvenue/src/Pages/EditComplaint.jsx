@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import baseURL from '../url';
 
 function EditComplaint() {
   const { id } = useParams();
@@ -18,7 +19,7 @@ function EditComplaint() {
   useEffect(() => {
     const fetchComplaint = async () => {
       try {
-        const baseURL = "http://localhost:3147";
+        // const baseURL = "http://localhost:3147";
         const res = await fetch(`${baseURL}/api/complaint/${id}`, {
           method: "GET",
           headers: { 
@@ -72,7 +73,7 @@ function EditComplaint() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const baseURL = "http://localhost:3147";
+      // const baseURL = "http://localhost:3147";
       const formDataToSend = new FormData(); // Use FormData for file upload
       formDataToSend.append('date', formData.date);
       formDataToSend.append('complaint', formData.complaint);

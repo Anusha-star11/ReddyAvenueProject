@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import baseURL from '../url';
 
 function AllComplaints() {
   const [complaints, setComplaints] = useState([]);
@@ -23,7 +24,7 @@ function AllComplaints() {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const baseURL = "http://localhost:3147";
+        // const baseURL = "http://localhost:3147";
         const res = await fetch(`${baseURL}/api/complaint/allcomplaints`, {
           method: "GET",
           headers: {
@@ -52,7 +53,7 @@ function AllComplaints() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this complaint?")) {
       try {
-        const baseURL = "http://localhost:3147";
+        // const baseURL = "http://localhost:3147";
         const res = await fetch(`${baseURL}/api/complaint/deletecomplaint/${id}`, {
           method: "DELETE",
           headers: {

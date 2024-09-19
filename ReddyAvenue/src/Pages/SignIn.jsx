@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signInStart, signInSuccess, signInfailure } from '../redux/user/userSlice';
+import baseURL from '../url';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -22,7 +23,7 @@ export default function SignIn() {
 
     try {
       dispatch(signInStart());
-      const baseURL = "http://localhost:3147";
+      // const baseURL = "http://localhost:3147";
       const res = await fetch(`${baseURL}/api/auth/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
