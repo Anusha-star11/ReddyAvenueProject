@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import Complaint from '../models/complaint.model.js';
 import { errorHandler } from "../utils/error.js";
+import baseURL from '../../ReddyAvenue/src/url.js';
 
 // Convert import.meta.url to __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -56,9 +57,11 @@ export const createComplaint = async (req, res, next) => {
       return next(errorHandler(400, "Please provide all required fields"));
     }
 
-    const imagePaths = req.files ? req.files.map(file => `uploads/${file.filename}`) : [];
+    const imagePaths = req.files ? req.files.map(file => `${baseURL}/uploads/${file.filename}`) : []; 
+    //updated baseURL
 
     // console.log('Image paths to save:', imagePaths);
+
 
     const newComplaint = new Complaint({
       complaint,
