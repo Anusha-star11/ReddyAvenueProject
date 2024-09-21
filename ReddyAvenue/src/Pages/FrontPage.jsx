@@ -196,7 +196,7 @@ function AllComplaints() {
                     <td className="border px-2 sm:px-4 py-1 sm:py-2">
                       {complaint.images && complaint.images.length > 0 ? (
                         <img
-                          src={`http://localhost:3147/${complaint.images[0]}`}
+                          src={`${baseURL}/${complaint.images[0]}`}
                           alt="Complaint"
                           className="w-10 h-10 sm:w-16 sm:h-16 object-cover rounded-md cursor-pointer"
                           onClick={() => handleImageClick(complaint.images)}
@@ -233,7 +233,7 @@ function AllComplaints() {
               </button>
               <div className="w-full flex justify-center">
                 <img
-                  src={`http://localhost:3147/${selectedImages[currentImageIndex]}`}
+                  src={`${baseURL}/${selectedImages[currentImageIndex]}`}
                   alt={`Complaint ${currentImageIndex + 1}`}
                   className="max-h-[250px] sm:max-h-[450px] object-cover rounded-lg"
                 />
