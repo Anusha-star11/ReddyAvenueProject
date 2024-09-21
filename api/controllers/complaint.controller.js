@@ -57,7 +57,7 @@ export const createComplaint = async (req, res, next) => {
       return next(errorHandler(400, "Please provide all required fields"));
     }
 
-    const imagePaths = req.files ? req.files.map(file => `${baseURL}/${file.filename}`) : [];
+    const imagePaths = req.files ? req.files.map(file => `${baseURL}/uploads/${file.filename}`) : [];
 
     // console.log('Image paths to save:', imagePaths);
 
@@ -107,7 +107,7 @@ export const updateComplaint = async (req, res, next) => {
     // Combine existing images and new uploads
     let imagePaths = req.body.existingImages || []; // Handle existing images
     if (req.files) {
-      imagePaths = imagePaths.concat(req.files.map(file => `uploads/${file.filename}`)); // Add new image paths
+      imagePaths = imagePaths.concat(req.files.map(file => `${baseURL}/uploads/${file.filename}`)); // Add new image paths
     }
 
     try {
