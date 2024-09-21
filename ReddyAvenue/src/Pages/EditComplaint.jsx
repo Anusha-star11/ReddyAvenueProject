@@ -207,7 +207,7 @@ function EditComplaint() {
                       <li key={index} className="flex items-center">
                         {!(image instanceof File) ? (
                           <img
-                            src={`http://localhost:3147/${image}`}
+                            src={`${baseURL}/${image}`}
                             alt={`Complaint ${index}`}
                             className="w-16 h-16 object-cover rounded-md mr-4"
                           />

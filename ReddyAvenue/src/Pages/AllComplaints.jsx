@@ -285,7 +285,7 @@ function AllComplaints() {
               </button>
               <div className="w-full flex justify-center">
                 <img
-                  src={`http://localhost:3147/${selectedImages[currentImageIndex]}`}
+                  src={`${baseURL}/${selectedImages[currentImageIndex]}`}
                   alt={`Complaint ${currentImageIndex + 1}`}
                   className="max-h-[450px] object-cover rounded-lg"
                 />
