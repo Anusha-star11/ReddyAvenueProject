@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import baseURL from '../url';
+
+const apiBaseURL = process.env.VITE_APP_API_BASE_URL;
 
 function AllComplaints() {
   const [complaints, setComplaints] = useState([]);
@@ -25,7 +26,7 @@ function AllComplaints() {
     const fetchComplaints = async () => {
       try {
         // const baseURL = "http://localhost:3147";
-        const res = await fetch(`${baseURL}/api/complaint/allcomplaints`, {
+        const res = await fetch(`${apiBaseURL}/api/complaint/allcomplaints`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -54,7 +55,7 @@ function AllComplaints() {
     if (window.confirm("Are you sure you want to delete this complaint?")) {
       try {
         // const baseURL = "http://localhost:3147";
-        const res = await fetch(`${baseURL}/api/complaint/deletecomplaint/${id}`, {
+        const res = await fetch(`${apiBaseURL}/api/complaint/deletecomplaint/${id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
