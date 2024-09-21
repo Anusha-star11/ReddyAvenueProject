@@ -107,7 +107,7 @@ export const updateComplaint = async (req, res, next) => {
     // Combine existing images and new uploads
     let imagePaths = req.body.existingImages || []; // Handle existing images
     if (req.files) {
-      imagePaths = imagePaths.concat(req.files.map(file => `${baseURL}/uploads/${file.filename}`)); // Add new image paths
+      imagePaths = imagePaths.concat(req.files.map(file => `uploads/${file.filename}`)); // Add new image paths
     }
 
     try {
