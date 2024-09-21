@@ -1,2 +1,2 @@
-const baseURL = "https://reddyavenueproject.onrender.com/";
+const baseURL = "https://reddyavenueproject.onrender.com";
 export default baseURL;
