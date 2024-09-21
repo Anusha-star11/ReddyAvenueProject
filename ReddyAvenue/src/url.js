@@ -1,2 +1,2 @@
-const baseURL = "http://localhost:3147";
+const baseURL = "https://reddyavenueproject.onrender.com/";
 export default baseURL;
