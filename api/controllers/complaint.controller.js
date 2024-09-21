@@ -4,7 +4,8 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import Complaint from '../models/complaint.model.js';
 import { errorHandler } from "../utils/error.js";
-import baseURL from '../../ReddyAvenue/src/url.js';
+
+const baseURL = process.env.BASE_URL || 'http://localhost:3147';
 
 // Convert import.meta.url to __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
