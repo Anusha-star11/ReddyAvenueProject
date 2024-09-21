@@ -234,7 +234,7 @@ function AllComplaints() {
                     <td className="border px-4 py-2">
                       {complaint.images && complaint.images.length > 0 ? (
                         <img
-                          src={`${baseURL}/${complaint.images[0]}`}
+                          src={`${complaint.images[0]}`}
                           alt="Complaint"
                           className="w-16 h-16 object-cover rounded-md cursor-pointer"
                           onClick={() => handleImageClick(complaint.images)}
