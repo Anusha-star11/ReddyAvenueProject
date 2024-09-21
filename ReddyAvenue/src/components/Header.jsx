@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import baseURL from '../url';
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -11,7 +12,7 @@ export default function Header() {
 
   const handleSignout = async () => {
     try {
-      const baseURL = 'http://localhost:3147';
+      // const baseURL = 'http://localhost:3147';
       const res = await fetch(`${baseURL}/api/user/signout`, {
         method: "POST",
       });
