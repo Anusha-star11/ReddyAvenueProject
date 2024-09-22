@@ -5,7 +5,7 @@ import fs from 'fs';
 import Complaint from '../models/complaint.model.js';
 import { errorHandler } from "../utils/error.js";
 
-const baseURL = process.env.BASE_URL || 'http://localhost:3147';
+const baseURL = "https://reddyavenueproject.onrender.com" ;
 
 // Convert import.meta.url to __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
