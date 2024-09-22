@@ -23,7 +23,8 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir); // Directory to store uploaded files
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Generate a unique name for the file
+    // cb(null, Date.now() + '-' + file.originalname);
+    cb(null, file.originalname); // Generate a unique name for the file
   }
 });
 
