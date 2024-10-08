@@ -10,8 +10,8 @@ function EditComplaint() {
     complaint: '',
     raisedBy: '',
     status: '',
-    images: [], // Updated to handle multiple images
-    comment: '', // Added comment field
+    images: [],
+    comment: '',
   });
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -19,7 +19,6 @@ function EditComplaint() {
   useEffect(() => {
     const fetchComplaint = async () => {
       try {
-        // const baseURL = "http://localhost:3147";
         const res = await fetch(`${baseURL}/api/complaint/${id}`, {
           method: "GET",
           headers: { 
@@ -31,12 +30,12 @@ function EditComplaint() {
         const data = await res.json();
         if (res.ok) {
           setFormData({
-            date: data.date.split('T')[0], // Format the date for the input field
+            date: data.date.split('T')[0],
             complaint: data.complaint,
             raisedBy: data.raisedBy,
             status: data.status,
-            images: data.images || [], // Ensure images is an array
-            comment: data.comment || '', // Ensure comment is handled
+            images: data.images || [],
+            comment: data.comment || '',
           });
         } else {
           setErrorMessage(data.message);
@@ -73,20 +72,18 @@ function EditComplaint() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const baseURL = "http://localhost:3147";
-      const formDataToSend = new FormData(); // Use FormData for file upload
+      const formDataToSend = new FormData();
       formDataToSend.append('date', formData.date);
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
       formDataToSend.append('status', formData.status);
-      formDataToSend.append('comment', formData.comment); // Append comment to the formData
+      formDataToSend.append('comment', formData.comment);
   
-      // Append existing images' paths if they are not new files
       formData.images.forEach((image) => {
         if (image instanceof File) {
-          formDataToSend.append('images', image); // New files to upload
+          formDataToSend.append('images', image);
         } else {
-          formDataToSend.append('existingImages', image); // Existing images
+          formDataToSend.append('existingImages', image);
         }
       });
   
@@ -108,19 +105,18 @@ function EditComplaint() {
       setErrorMessage(error.message);
     }
   };
-  
 
   return (
-    <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-3xl font-bold mb-4">Edit Complaint</h2>
+    <div className="min-h-screen bg-gray-300 text-gray-800 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4">Edit Complaint</h2>
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-center">Loading...</p>
         ) : errorMessage ? (
-          <p className="text-red-500">{errorMessage}</p>
+          <p className="text-red-500 text-center">{errorMessage}</p>
         ) : (
-          <form onSubmit={handleSubmit} className="mb-8" encType="multipart/form-data">
-            <div className="mb-4">
+          <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="date">
                 Date
               </label>
@@ -133,7 +129,7 @@ function EditComplaint() {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="complaint">
                 Complaint
               </label>
@@ -146,7 +142,7 @@ function EditComplaint() {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="raisedBy">
                 Raised By
               </label>
@@ -159,7 +155,7 @@ function EditComplaint() {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="status">
                 Status
               </label>
@@ -172,7 +168,7 @@ function EditComplaint() {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="comment">
                 Comment
               </label>
@@ -185,7 +181,7 @@ function EditComplaint() {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="images">
                 Upload Images
               </label>
@@ -198,25 +194,24 @@ function EditComplaint() {
                 accept="image/*"
                 multiple
               />
-              {/* Display currently stored images with delete option */}
               {formData.images.length > 0 && (
-                <div className="mb-4">
+                <div className="mt-4">
                   <h3 className="block text-sm font-bold mb-2">Current Images:</h3>
-                  <ul>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {formData.images.map((image, index) => (
-                      <li key={index} className="flex items-center">
+                      <li key={index} className="flex flex-col items-center bg-gray-100 p-2 rounded-md">
                         {!(image instanceof File) ? (
                           <img
                             src={`${baseURL}/${image}`}
                             alt={`Complaint ${index}`}
-                            className="w-16 h-16 object-cover rounded-md mr-4"
+                            className="w-full h-32 object-cover rounded-md mb-2"
                           />
                         ) : (
-                          <span className="mr-4">{image.name}</span>
+                          <span className="mb-2 text-sm">{image.name}</span>
                         )}
                         <button
                           type="button"
-                          className="bg-red-500 text-white px-2 py-1 rounded"
+                          className="bg-red-500 text-white px-2 py-1 rounded text-sm"
                           onClick={() => handleDeleteImage(index)}
                         >
                           Delete
@@ -228,10 +223,10 @@ function EditComplaint() {
               )}
             </div>
 
-            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
             <button
               type="submit"
-              className="bg-green-500 hover:bg-blue-500 p-2"
+              className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
             >
               Update Complaint
             </button>

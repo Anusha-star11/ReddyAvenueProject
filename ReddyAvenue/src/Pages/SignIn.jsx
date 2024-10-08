@@ -23,7 +23,6 @@ export default function SignIn() {
 
     try {
       dispatch(signInStart());
-      // const baseURL = "http://localhost:3147";
       const res = await fetch(`${baseURL}/api/auth/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -46,13 +45,13 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-400">
-      <div className="bg-gray-100 shadow-lg rounded-lg p-10 max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Welcome</h1>
-          <p className="text-gray-500">Please sign in to your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-400 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gray-100 shadow-lg rounded-lg p-6 sm:p-8 md:p-10 w-full max-w-md">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">Welcome</h1>
+          <p className="text-gray-500 text-sm sm:text-base">Please sign in to your account</p>
         </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
           <div className="relative">
             <label
               htmlFor="email"
@@ -65,7 +64,7 @@ export default function SignIn() {
               id="email"
               placeholder="Enter your email"
               onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-1 block w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-50 border border-gray-300 rounded-md text-gray-900 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <div className="relative">
@@ -80,27 +79,22 @@ export default function SignIn() {
               id="password"
               placeholder="Enter your password"
               onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-1 block w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-50 border border-gray-300 rounded-md text-gray-900 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <button
             type="submit"
-            className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-md transition ease-in-out duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 sm:py-3 rounded-md text-sm sm:text-base transition ease-in-out duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={loading}
           >
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
         {errorMessage && (
-          <div className="mt-6 text-red-500 text-sm text-center">
+          <div className="mt-4 sm:mt-6 text-red-500 text-xs sm:text-sm text-center">
             {errorMessage}
           </div>
         )}
-        {/* <div className="mt-6 text-center">
-          <a href="/sign-up" className="text-indigo-600 hover:text-indigo-800 text-sm">
-            Forgot password?
-          </a>
-        </div> */}
       </div>
     </div>
   );

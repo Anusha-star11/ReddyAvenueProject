@@ -1,4 +1,3 @@
-// ContactDetails.js
 import React from 'react';
 
 const Contact = () => {
@@ -25,30 +24,34 @@ const Contact = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-200 py-10">  
-        <div className="max-w-4xl mx-auto p-8 bg-gray-100 rounded-lg shadow-lg mt-10">
-            <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Contact Details</h2>
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead className="bg-gray-100">
-                    <tr>
-                        <th className="py-3 px-6 border-b border-gray-300 text-left text-gray-700 font-semibold">Name</th>
-                        <th className="py-3 px-6 border-b border-gray-300 text-left text-gray-700 font-semibold">Post</th>
-                        <th className="py-3 px-6 border-b border-gray-300 text-left text-gray-700 font-semibold">Contact Number</th>
-                        <th className="py-3 px-6 border-b border-gray-300 text-left text-gray-700 font-semibold">Address</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {contacts.map((contact, index) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                            <td className="py-4 px-6 border-b border-gray-300 text-gray-600">{contact.name}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-gray-600">{contact.post}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-gray-600">{contact.contactNumber}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-gray-600">{contact.address}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+        <div className="min-h-screen bg-gray-200 py-4 sm:py-6 lg:py-8">  
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <h2 className="text-2xl sm:text-3xl font-semibold text-center text-gray-800 p-4 sm:p-6">Contact Details</h2>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Post</th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Number</th>
+                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {contacts.map((contact, index) => (
+                                    <tr key={index} className="hover:bg-gray-50">
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">{contact.name}</td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">{contact.post}</td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-600">{contact.contactNumber}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-600">{contact.address}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

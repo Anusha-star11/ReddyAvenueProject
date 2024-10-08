@@ -9,9 +9,9 @@ function ComplaintDetails() {
     date: '',
     complaint: '',
     raisedBy: '',
-    status: 'pending', // Default status
-    images: [], // Initialize images as an array
-    comment: '', // Added comment field
+    status: 'pending',
+    images: [],
+    comment: '',
   });
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -20,7 +20,6 @@ function ComplaintDetails() {
 
   const handleChange = (e) => {
     if (e.target.name === 'images') {
-      // Append new files to the existing files in formData.images
       const selectedFiles = Array.from(e.target.files);
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -42,20 +41,18 @@ function ComplaintDetails() {
     try {
       setLoading(true);
       setErrorMessage(null);
-      // const baseURL = "http://localhost:3147";
       const formDataToSend = new FormData();
   
       formDataToSend.append('date', formData.date);
       formDataToSend.append('complaint', formData.complaint);
       formDataToSend.append('raisedBy', formData.raisedBy);
       formDataToSend.append('status', formData.status);
-      formDataToSend.append('comment', formData.comment); // Append comment field
+      formDataToSend.append('comment', formData.comment);
   
       formData.images.forEach((image) => {
         formDataToSend.append('images', image);
       });
   
-      // Step 1: Submit the complaint
       const res = await fetch(`${baseURL}/api/complaint/createcomplaint`, {
         method: "POST",
         body: formDataToSend,
@@ -68,7 +65,6 @@ function ComplaintDetails() {
         return setErrorMessage(data.message);
       }
 
-      // Step 2: Send WhatsApp notification after complaint is successfully added
       const message = `New complaint raised: ${formData.complaint} by ${formData.raisedBy}.`;
       const notifyRes = await fetch(`${baseURL}/api/notify-whatsapp`, {
         method: "POST",
@@ -76,7 +72,7 @@ function ComplaintDetails() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "+918125353350", // Replace with the WhatsApp group number
+          to: "+918125353350",
           message: message,
         }),
       });
@@ -91,14 +87,13 @@ function ComplaintDetails() {
       setLoading(false);
       setSuccessMessage(`Complaint added successfully with ${formData.images.length} image(s) and WhatsApp notification sent.`);
 
-      // Reset form data
       setFormData({
         date: '',
         complaint: '',
         raisedBy: '',
         status: 'pending',
         images: [],
-        comment: '', // Reset comment field
+        comment: '',
       });
   
       setTimeout(() => {
@@ -110,14 +105,13 @@ function ComplaintDetails() {
       setLoading(false);
     }
   };
-  
 
   return (
-    <div className="min-h-screen bg-gray-300 text-gray-800 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-3xl font-bold mb-4">Complaint Details</h2>
-        <form onSubmit={handleSubmit} className="mb-8">
-          <div className="mb-4">
+    <div className="min-h-screen bg-gray-300 text-gray-800 p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-8">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4">Complaint Details</h2>
+        <form onSubmit={handleSubmit} className="mb-8 space-y-4">
+          <div>
             <label className="block text-sm font-bold mb-2" htmlFor="date">
               Date
             </label>
@@ -130,7 +124,7 @@ function ComplaintDetails() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-bold mb-2" htmlFor="complaint">
               Complaint
             </label>
@@ -143,7 +137,7 @@ function ComplaintDetails() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-bold mb-2" htmlFor="raisedBy">
               Raised By
             </label>
@@ -157,7 +151,7 @@ function ComplaintDetails() {
             />
           </div>
           {currentUser.user.isAdmin && (
-            <div className="mb-4">
+            <div>
               <label className="block text-sm font-bold mb-2" htmlFor="status">
                 Status
               </label>
@@ -174,7 +168,7 @@ function ComplaintDetails() {
               </select>
             </div>
           )}
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-bold mb-2" htmlFor="comment">
               Comment
             </label>
@@ -187,7 +181,7 @@ function ComplaintDetails() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-bold mb-2" htmlFor="images">
               Upload Images
             </label>
@@ -202,23 +196,22 @@ function ComplaintDetails() {
             />
           </div>
 
-          {/* Display the list of selected images */}
           {formData.images.length > 0 && (
-            <div className="mb-4">
+            <div>
               <h3 className="block text-sm font-bold mb-2">Selected Images:</h3>
-              <ul>
+              <ul className="list-disc pl-5">
                 {formData.images.map((image, index) => (
-                  <li key={index}>{image.name}</li>
+                  <li key={index} className="text-sm">{image.name}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          {successMessage && <p className="text-green-500">{successMessage}</p>}
+          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+          {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
           <button
             type="submit"
-            className="bg-orange-500 hover:bg-blue-500 p-2 rounded-lg"
+            className="w-full sm:w-auto bg-orange-500 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
             disabled={loading}
           >
             {loading ? 'Adding...' : 'Add Complaint'}
