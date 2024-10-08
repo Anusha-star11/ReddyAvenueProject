@@ -12,7 +12,7 @@ function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white">
       <div className="flex flex-grow">
-        {/* Sidebar */}
+        {/* Sidebarrr */}
         <div className="w-1/4 bg-gray-600 p-4">
           <h2 className="text-2xl font-bold mb-4 text-yellow-500">Menu</h2>
           <ul>
